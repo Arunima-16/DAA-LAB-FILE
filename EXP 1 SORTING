@@ -1,0 +1,63 @@
+import random
+import matplotlib.pyplot as plt
+def generate_random_array(size, lower_bound, upper_bound):
+    return [random.randint(lower_bound, upper_bound) for _ in range(size)]
+def bubble_sort_with_step_count(random_array, ascending=True):
+    x = len(random_array)
+    steps = 0
+    for i in range(x):
+        for j in range(0, x-i-1):
+            steps += 1  # Count the comparison step
+            if (ascending and random_array[j] > random_array[j+1]) or (not ascending and random_array[j] < random_array[j+1]):
+                random_array[j], random_array[j+1] = random_array[j+1], random_array[j]
+                steps += 1  # Count the swap step
+    return steps
+def selection_sort_with_step_count(random_array):
+    steps = 0
+    for i in range(len(random_array)):
+        min_idx = i
+        for j in range(i+1, len(random_array)):
+            steps += 1  # Count the comparison step
+            if random_array[j] < random_array[min_idx]:
+                min_idx = j
+        random_array[i], random_array[min_idx] = random_array[min_idx], random_array[i]
+        steps += 1  # Count the swap step
+    return steps
+
+sizes = [10, 20, 30, 40]
+lower_bound = 1
+upper_bound = 100
+
+bubble_sort_steps = []
+selection_sort_steps = []
+
+for size in sizes:
+    total_bubble_steps = 0
+    total_selection_steps = 0
+    for _ in range(10):  
+        random_array = generate_random_array(size, lower_bound, upper_bound)
+        
+        # Bubble Sort
+        steps = bubble_sort_with_step_count(random_array.copy(), ascending=True)
+        total_bubble_steps += steps
+        
+        # Selection Sort
+        steps = selection_sort_with_step_count(random_array.copy())
+        total_selection_steps += steps
+    
+    avg_bubble_steps = total_bubble_steps / 10
+    avg_selection_steps = total_selection_steps / 10
+    
+    bubble_sort_steps.append(avg_bubble_steps)
+    selection_sort_steps.append(avg_selection_steps)
+
+# Plotting the results
+plt.figure(figsize=(10, 6))
+plt.plot(sizes, bubble_sort_steps, label='Bubble Sort', marker='o')
+plt.plot(sizes, selection_sort_steps, label='Selection Sort', marker='o')
+plt.xlabel('Number of Elements')
+plt.ylabel('Average Number of Steps')
+plt.title('Sorting Algorithms Step Count Analysis')
+plt.legend()
+plt.grid(True)
+plt.show()
